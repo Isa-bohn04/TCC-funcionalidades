@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio Semanal</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px;
+  }
+  th {
+    background: #28a745;
+    color: white;
+  }
+  td {
+    vertical-align: top;
+  }
+</style>
+</head>
+<body>
+
+<h1>Cardápio Semanal</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Turno / Dia</th>
+      <th>Segunda</th>
+      <th>Terça</th>
+      <th>Quarta</th>
+      <th>Quinta</th>
+      <th>Sexta</th>
+    </tr>
+  </thead>
+  <tbody id="cardapioBody">
+    <!-- Linhas preenchidas pelo JS -->
+  </tbody>
+</table>
+
+<script>
+const turnos = ["Manhã", "Tarde"];
+
+// Exemplo de cardápio
+const cardapio = {
+  "Manhã": {
+    "Segunda": { entrada: "Frutas", lanche: "Pão com queijo", saida: "Suco" },
+    "Terça": { entrada: "Iogurte", lanche: "Bolo de cenoura", saida: "Leite" },
+    "Quarta": { entrada: "Frutas", lanche: "Sanduíche", saida: "Suco" },
+    "Quinta": { entrada: "Iogurte", lanche: "Pão de queijo", saida: "Leite" },
+    "Sexta": { entrada: "Frutas", lanche: "Biscoitos", saida: "Suco" }
+  },
+  "Tarde": {
+    "Segunda": { entrada: "Sopa", lanche: "Pão", saida: "Água" },
+    "Terça": { entrada: "Macarrão", lanche: "Frutas", saida: "Água" },
+    "Quarta": { entrada: "Arroz e feijão", lanche: "Pão com queijo", saida: "Suco" },
+    "Quinta": { entrada: "Sopa", lanche: "Bolo", saida: "Água" },
+    "Sexta": { entrada: "Macarrão", lanche: "Frutas", saida: "Suco" }
+  }
+};
+
+// Preenche a tabela
+const tbody = document.getElementById('cardapioBody');
+
+turnos.forEach(turno => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><b>${turno}</b></td>
+    <td>Entrada: ${cardapio[turno]["Segunda"].entrada}<br>Lanche: ${cardapio[turno]["Segunda"].lanche}<br>Saída: ${cardapio[turno]["Segunda"].saida}</td>
+    <td>Entrada: ${cardapio[turno]["Terça"].entrada}<br>Lanche: ${cardapio[turno]["Terça"].lanche}<br>Saída: ${cardapio[turno]["Terça"].saida}</td>
+    <td>Entrada: ${cardapio[turno]["Quarta"].entrada}<br>Lanche: ${cardapio[turno]["Quarta"].lanche}<br>Saída: ${cardapio[turno]["Quarta"].saida}</td>
+    <td>Entrada: ${cardapio[turno]["Quinta"].entrada}<br>Lanche: ${cardapio[turno]["Quinta"].lanche}<br>Saída: ${cardapio[turno]["Quinta"].saida}</td>
+    <td>Entrada: ${cardapio[turno]["Sexta"].entrada}<br>Lanche: ${cardapio[turno]["Sexta"].lanche}<br>Saída: ${cardapio[turno]["Sexta"].saida}</td>`;
+  tbody.appendChild(tr);
+});
+</script>
+
+</body>
+</html>
