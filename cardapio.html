@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cardápio Semanal</title>
+<title>Cardápio Semanal Editável</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -29,14 +29,26 @@
     background: #28a745;
     color: white;
   }
-  td {
-    vertical-align: top;
+  td input {
+    width: 90%;
+    padding: 4px;
+    margin: 2px 0;
+    box-sizing: border-box;
+  }
+  button {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<h1>Cardápio Semanal</h1>
+<h1>Cardápio Semanal Editável</h1>
 
 <table>
   <thead>
@@ -54,41 +66,54 @@
   </tbody>
 </table>
 
+<button onclick="salvarCardapio()">Salvar Cardápio</button>
+
 <script>
+// Turnos e dias
 const turnos = ["Manhã", "Tarde"];
+const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
 
-// Exemplo de cardápio
-const cardapio = {
-  "Manhã": {
-    "Segunda": { entrada: "Frutas", lanche: "Pão com queijo", saida: "Suco" },
-    "Terça": { entrada: "Iogurte", lanche: "Bolo de cenoura", saida: "Leite" },
-    "Quarta": { entrada: "Frutas", lanche: "Sanduíche", saida: "Suco" },
-    "Quinta": { entrada: "Iogurte", lanche: "Pão de queijo", saida: "Leite" },
-    "Sexta": { entrada: "Frutas", lanche: "Biscoitos", saida: "Suco" }
-  },
-  "Tarde": {
-    "Segunda": { entrada: "Sopa", lanche: "Pão", saida: "Água" },
-    "Terça": { entrada: "Macarrão", lanche: "Frutas", saida: "Água" },
-    "Quarta": { entrada: "Arroz e feijão", lanche: "Pão com queijo", saida: "Suco" },
-    "Quinta": { entrada: "Sopa", lanche: "Bolo", saida: "Água" },
-    "Sexta": { entrada: "Macarrão", lanche: "Frutas", saida: "Suco" }
-  }
-};
-
-// Preenche a tabela
-const tbody = document.getElementById('cardapioBody');
-
+// Inicializa cardápio vazio
+let cardapio = {};
 turnos.forEach(turno => {
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td><b>${turno}</b></td>
-    <td>Entrada: ${cardapio[turno]["Segunda"].entrada}<br>Lanche: ${cardapio[turno]["Segunda"].lanche}<br>Saída: ${cardapio[turno]["Segunda"].saida}</td>
-    <td>Entrada: ${cardapio[turno]["Terça"].entrada}<br>Lanche: ${cardapio[turno]["Terça"].lanche}<br>Saída: ${cardapio[turno]["Terça"].saida}</td>
-    <td>Entrada: ${cardapio[turno]["Quarta"].entrada}<br>Lanche: ${cardapio[turno]["Quarta"].lanche}<br>Saída: ${cardapio[turno]["Quarta"].saida}</td>
-    <td>Entrada: ${cardapio[turno]["Quinta"].entrada}<br>Lanche: ${cardapio[turno]["Quinta"].lanche}<br>Saída: ${cardapio[turno]["Quinta"].saida}</td>
-    <td>Entrada: ${cardapio[turno]["Sexta"].entrada}<br>Lanche: ${cardapio[turno]["Sexta"].lanche}<br>Saída: ${cardapio[turno]["Sexta"].saida}</td>`;
-  tbody.appendChild(tr);
+  cardapio[turno] = {};
+  dias.forEach(dia => {
+    cardapio[turno][dia] = { entrada: "", lanche: "", saida: "" };
+  });
 });
+
+// Função para renderizar tabela editável
+function renderCardapio() {
+  const tbody = document.getElementById('cardapioBody');
+  tbody.innerHTML = '';
+
+  turnos.forEach(turno => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><b>${turno}</b></td>` + 
+      dias.map(dia => `
+        <td>
+          Entrada:<br><input type="text" value="${cardapio[turno][dia].entrada}" 
+            onchange="cardapio['${turno}']['${dia}'].entrada=this.value">
+          <br>Lanche:<br><input type="text" value="${cardapio[turno][dia].lanche}" 
+            onchange="cardapio['${turno}']['${dia}'].lanche=this.value">
+          <br>Saída:<br><input type="text" value="${cardapio[turno][dia].saida}" 
+            onchange="cardapio['${turno}']['${dia}'].saida=this.value">
+        </td>
+      `).join('');
+    tbody.appendChild(tr);
+  });
+}
+
+// Função de salvar (aqui apenas mostra no console, pode salvar no banco)
+function salvarCardapio() {
+  console.log("Cardápio salvo:", cardapio);
+  alert("Cardápio atualizado com sucesso!");
+}
+
+// Renderiza inicialmente
+renderCardapio();
 </script>
 
 </body>
 </html>
+
