@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cardápio Semanal por Horário</title>
+<title>Cardápio Semanal por Turno</title>
 <style>
   body { font-family: Arial; padding: 20px; background: #f4f4f4; }
   h1 { text-align: center; margin-bottom: 20px; }
@@ -16,12 +16,12 @@
 </head>
 <body>
 
-<h1>Cardápio Semanal Editável</h1>
+<h1>Cardápio Semanal Editável por Turno</h1>
 
 <table>
   <thead>
     <tr>
-      <th>Horário</th>
+      <th>Turno</th>
       <th>Segunda</th>
       <th>Terça</th>
       <th>Quarta</th>
@@ -35,53 +35,53 @@
 <button onclick="salvarCardapio()">Salvar Cardápio</button>
 
 <script>
-// Horários disponíveis
-const horarios = ["07:00 - 07:50", "07:50 - 08:40", "08:50 - 09:40", "09:40 - 10:30", "10:50 - 11:40"];
+// Turnos disponíveis
+let turnos = ["Manhã", "Tarde", "Noite"];
 
 // Dias da semana
 const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
 
 // Inicializa cardápio vazio
 let cardapio = {};
-horarios.forEach(horario => {
-  cardapio[horario] = {};
+turnos.forEach(turno => {
+  cardapio[turno] = {};
   dias.forEach(dia => {
-    cardapio[horario][dia] = { entrada: "", lanche: "", saida: "" };
+    cardapio[turno][dia] = { entrada: "", lanche: "", saida: "" };
   });
 });
 
-// Renderiza tabela editável
+// Função para renderizar tabela editável
 function renderCardapio() {
   const tbody = document.getElementById('cardapioBody');
   tbody.innerHTML = '';
 
-  horarios.forEach(horario => {
+  turnos.forEach(turno => {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>
-        <select onchange="alterarHorario(this, '${horario}')">
-          ${horarios.map(h => `<option value="${h}" ${h===horario?'selected':''}>${h}</option>`).join('')}
+        <select onchange="alterarTurno(this, '${turno}')">
+          ${turnos.map(t => `<option value="${t}" ${t===turno?'selected':''}>${t}</option>`).join('')}
         </select>
       </td>` +
       dias.map(dia => `
         <td>
-          Entrada:<br><input type="text" value="${cardapio[horario][dia].entrada}" onchange="cardapio['${horario}']['${dia}'].entrada=this.value">
-          <br>Lanche:<br><input type="text" value="${cardapio[horario][dia].lanche}" onchange="cardapio['${horario}']['${dia}'].lanche=this.value">
-          <br>Saída:<br><input type="text" value="${cardapio[horario][dia].saida}" onchange="cardapio['${horario}']['${dia}'].saida=this.value">
+          Entrada:<br><input type="text" value="${cardapio[turno][dia].entrada}" onchange="cardapio['${turno}']['${dia}'].entrada=this.value">
+          <br>Lanche:<br><input type="text" value="${cardapio[turno][dia].lanche}" onchange="cardapio['${turno}']['${dia}'].lanche=this.value">
+          <br>Saída:<br><input type="text" value="${cardapio[turno][dia].saida}" onchange="cardapio['${turno}']['${dia}'].saida=this.value">
         </td>`).join('');
     tbody.appendChild(tr);
   });
 }
 
-// Função para alterar horário de uma linha
-function alterarHorario(select, antigoHorario) {
-  const novoHorario = select.value;
-  if (novoHorario === antigoHorario) return;
+// Alterar nome do turno
+function alterarTurno(select, antigoTurno) {
+  const novoTurno = select.value;
+  if (novoTurno === antigoTurno) return;
 
-  // Copia os dados para o novo horário
-  if (!cardapio[novoHorario]) cardapio[novoHorario] = {};
+  // Cria novo turno se não existir
+  if (!cardapio[novoTurno]) cardapio[novoTurno] = {};
   dias.forEach(dia => {
-    cardapio[novoHorario][dia] = { ...cardapio[antigoHorario][dia] };
-    cardapio[antigoHorario][dia] = { entrada:"", lanche:"", saida:"" };
+    cardapio[novoTurno][dia] = { ...cardapio[antigoTurno][dia] };
+    cardapio[antigoTurno][dia] = { entrada:"", lanche:"", saida:"" };
   });
 
   renderCardapio();
@@ -93,7 +93,7 @@ function salvarCardapio() {
   alert("Cardápio atualizado com sucesso!");
 }
 
-// Inicializa
+// Renderiza inicialmente
 renderCardapio();
 </script>
 
