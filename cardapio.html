@@ -3,47 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cardápio Semanal Editável</title>
+<title>Cardápio Semanal por Horário</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    padding: 20px;
-  }
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-  }
-  th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-    font-size: 14px;
-  }
-  th {
-    background: #28a745;
-    color: white;
-  }
-  td input {
-    width: 90%;
-    padding: 4px;
-    margin: 2px 0;
-    box-sizing: border-box;
-  }
-  button {
-    margin-top: 10px;
-    padding: 6px 12px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+  body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+  h1 { text-align: center; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; background: white; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: center; font-size: 14px; }
+  th { background: #28a745; color: white; }
+  td input, td select { width: 90%; padding: 4px; margin: 2px 0; box-sizing: border-box; }
+  button { margin-top: 10px; padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -53,7 +21,7 @@
 <table>
   <thead>
     <tr>
-      <th>Turno / Dia</th>
+      <th>Horário</th>
       <th>Segunda</th>
       <th>Terça</th>
       <th>Quarta</th>
@@ -61,59 +29,73 @@
       <th>Sexta</th>
     </tr>
   </thead>
-  <tbody id="cardapioBody">
-    <!-- Linhas preenchidas pelo JS -->
-  </tbody>
+  <tbody id="cardapioBody"></tbody>
 </table>
 
 <button onclick="salvarCardapio()">Salvar Cardápio</button>
 
 <script>
-// Turnos e dias
-const turnos = ["Manhã", "Tarde"];
+// Horários disponíveis
+const horarios = ["07:00 - 07:50", "07:50 - 08:40", "08:50 - 09:40", "09:40 - 10:30", "10:50 - 11:40"];
+
+// Dias da semana
 const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
 
 // Inicializa cardápio vazio
 let cardapio = {};
-turnos.forEach(turno => {
-  cardapio[turno] = {};
+horarios.forEach(horario => {
+  cardapio[horario] = {};
   dias.forEach(dia => {
-    cardapio[turno][dia] = { entrada: "", lanche: "", saida: "" };
+    cardapio[horario][dia] = { entrada: "", lanche: "", saida: "" };
   });
 });
 
-// Função para renderizar tabela editável
+// Renderiza tabela editável
 function renderCardapio() {
   const tbody = document.getElementById('cardapioBody');
   tbody.innerHTML = '';
 
-  turnos.forEach(turno => {
+  horarios.forEach(horario => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><b>${turno}</b></td>` + 
+    tr.innerHTML = `<td>
+        <select onchange="alterarHorario(this, '${horario}')">
+          ${horarios.map(h => `<option value="${h}" ${h===horario?'selected':''}>${h}</option>`).join('')}
+        </select>
+      </td>` +
       dias.map(dia => `
         <td>
-          Entrada:<br><input type="text" value="${cardapio[turno][dia].entrada}" 
-            onchange="cardapio['${turno}']['${dia}'].entrada=this.value">
-          <br>Lanche:<br><input type="text" value="${cardapio[turno][dia].lanche}" 
-            onchange="cardapio['${turno}']['${dia}'].lanche=this.value">
-          <br>Saída:<br><input type="text" value="${cardapio[turno][dia].saida}" 
-            onchange="cardapio['${turno}']['${dia}'].saida=this.value">
-        </td>
-      `).join('');
+          Entrada:<br><input type="text" value="${cardapio[horario][dia].entrada}" onchange="cardapio['${horario}']['${dia}'].entrada=this.value">
+          <br>Lanche:<br><input type="text" value="${cardapio[horario][dia].lanche}" onchange="cardapio['${horario}']['${dia}'].lanche=this.value">
+          <br>Saída:<br><input type="text" value="${cardapio[horario][dia].saida}" onchange="cardapio['${horario}']['${dia}'].saida=this.value">
+        </td>`).join('');
     tbody.appendChild(tr);
   });
 }
 
-// Função de salvar (aqui apenas mostra no console, pode salvar no banco)
+// Função para alterar horário de uma linha
+function alterarHorario(select, antigoHorario) {
+  const novoHorario = select.value;
+  if (novoHorario === antigoHorario) return;
+
+  // Copia os dados para o novo horário
+  if (!cardapio[novoHorario]) cardapio[novoHorario] = {};
+  dias.forEach(dia => {
+    cardapio[novoHorario][dia] = { ...cardapio[antigoHorario][dia] };
+    cardapio[antigoHorario][dia] = { entrada:"", lanche:"", saida:"" };
+  });
+
+  renderCardapio();
+}
+
+// Salvar cardápio
 function salvarCardapio() {
   console.log("Cardápio salvo:", cardapio);
   alert("Cardápio atualizado com sucesso!");
 }
 
-// Renderiza inicialmente
+// Inicializa
 renderCardapio();
 </script>
 
 </body>
 </html>
-
