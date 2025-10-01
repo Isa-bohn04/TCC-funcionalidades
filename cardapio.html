@@ -1,101 +1,163 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cardápio Semanal por Turno</title>
-<style>
-  body { font-family: Arial; padding: 20px; background: #f4f4f4; }
-  h1 { text-align: center; margin-bottom: 20px; }
-  table { width: 100%; border-collapse: collapse; background: white; }
-  th, td { border: 1px solid #ccc; padding: 8px; text-align: center; font-size: 14px; }
-  th { background: #28a745; color: white; }
-  td input, td select { width: 90%; padding: 4px; margin: 2px 0; box-sizing: border-box; }
-  button { margin-top: 10px; padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cardápio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #28a745;
+      color: white;
+    }
+    input, select, button {
+      padding: 5px;
+      margin: 5px 0;
+    }
+    .form-container {
+      background: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    .btn-edit, .btn-delete {
+      cursor: pointer;
+      padding: 5px 8px;
+      border: none;
+      border-radius: 4px;
+      margin: 0 2px;
+    }
+    .btn-edit { background: #ffc107; color: #000; }
+    .btn-delete { background: #dc3545; color: #fff; }
+  </style>
 </head>
 <body>
 
-<h1>Cardápio Semanal Editável por Turno</h1>
+<h1>Cardápio</h1>
+
+<div class="form-container">
+  <h3>Adicionar / Editar Item</h3>
+  <input type="hidden" id="editIndex">
+  <label>Categoria: 
+    <select id="categoria">
+      <option>Entrada</option>
+      <option>Prato Principal</option>
+      <option>Sobremesa</option>
+      <option>Bebida</option>
+    </select>
+  </label>
+  <label>Nome: <input type="text" id="nome"></label>
+  <label>Descrição: <input type="text" id="descricao"></label>
+  <label>Preço: <input type="number" id="preco" step="0.01" min="0"></label>
+  <br>
+  <button onclick="addOrUpdateItem()">Salvar Item</button>
+</div>
 
 <table>
   <thead>
     <tr>
-      <th>Turno</th>
-      <th>Segunda</th>
-      <th>Terça</th>
-      <th>Quarta</th>
-      <th>Quinta</th>
-      <th>Sexta</th>
+      <th>Categoria</th>
+      <th>Nome</th>
+      <th>Descrição</th>
+      <th>Preço (R$)</th>
+      <th>Ações</th>
     </tr>
   </thead>
-  <tbody id="cardapioBody"></tbody>
+  <tbody id="cardapioBody">
+    <!-- Conteúdo dinâmico -->
+  </tbody>
 </table>
 
-<button onclick="salvarCardapio()">Salvar Cardápio</button>
-
 <script>
-// Turnos disponíveis
-let turnos = ["Manhã", "Tarde", "Noite"];
+let itensCardapio = [];
 
-// Dias da semana
-const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
-
-// Inicializa cardápio vazio
-let cardapio = {};
-turnos.forEach(turno => {
-  cardapio[turno] = {};
-  dias.forEach(dia => {
-    cardapio[turno][dia] = { entrada: "", lanche: "", saida: "" };
-  });
-});
-
-// Função para renderizar tabela editável
 function renderCardapio() {
   const tbody = document.getElementById('cardapioBody');
   tbody.innerHTML = '';
-
-  turnos.forEach(turno => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>
-        <select onchange="alterarTurno(this, '${turno}')">
-          ${turnos.map(t => `<option value="${t}" ${t===turno?'selected':''}>${t}</option>`).join('')}
-        </select>
-      </td>` +
-      dias.map(dia => `
-        <td>
-          Entrada:<br><input type="text" value="${cardapio[turno][dia].entrada}" onchange="cardapio['${turno}']['${dia}'].entrada=this.value">
-          <br>Lanche:<br><input type="text" value="${cardapio[turno][dia].lanche}" onchange="cardapio['${turno}']['${dia}'].lanche=this.value">
-          <br>Saída:<br><input type="text" value="${cardapio[turno][dia].saida}" onchange="cardapio['${turno}']['${dia}'].saida=this.value">
-        </td>`).join('');
-    tbody.appendChild(tr);
+  itensCardapio.forEach((item, index) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${item.categoria}</td>
+      <td>${item.nome}</td>
+      <td>${item.descricao}</td>
+      <td>R$ ${item.preco.toFixed(2)}</td>
+      <td>
+        <button class="btn-edit" onclick="editItem(${index})">Editar</button>
+        <button class="btn-delete" onclick="deleteItem(${index})">Excluir</button>
+      </td>
+    `;
+    tbody.appendChild(row);
   });
 }
 
-// Alterar nome do turno
-function alterarTurno(select, antigoTurno) {
-  const novoTurno = select.value;
-  if (novoTurno === antigoTurno) return;
+function addOrUpdateItem() {
+  const categoria = document.getElementById('categoria').value;
+  const nome = document.getElementById('nome').value;
+  const descricao = document.getElementById('descricao').value;
+  const preco = parseFloat(document.getElementById('preco').value);
+  const editIndex = document.getElementById('editIndex').value;
 
-  // Cria novo turno se não existir
-  if (!cardapio[novoTurno]) cardapio[novoTurno] = {};
-  dias.forEach(dia => {
-    cardapio[novoTurno][dia] = { ...cardapio[antigoTurno][dia] };
-    cardapio[antigoTurno][dia] = { entrada:"", lanche:"", saida:"" };
-  });
+  if (!nome || !descricao || isNaN(preco) || preco <= 0) {
+    alert('Preencha todos os campos obrigatórios corretamente!');
+    return;
+  }
 
+  const item = { categoria, nome, descricao, preco };
+
+  if (editIndex === '') {
+    itensCardapio.push(item);
+  } else {
+    itensCardapio[editIndex] = item;
+    document.getElementById('editIndex').value = '';
+  }
+
+  clearForm();
   renderCardapio();
 }
 
-// Salvar cardápio
-function salvarCardapio() {
-  console.log("Cardápio salvo:", cardapio);
-  alert("Cardápio atualizado com sucesso!");
+function editItem(index) {
+  const item = itensCardapio[index];
+  document.getElementById('categoria').value = item.categoria;
+  document.getElementById('nome').value = item.nome;
+  document.getElementById('descricao').value = item.descricao;
+  document.getElementById('preco').value = item.preco;
+  document.getElementById('editIndex').value = index;
 }
 
-// Renderiza inicialmente
-renderCardapio();
+function deleteItem(index) {
+  if (confirm('Deseja realmente excluir este item do cardápio?')) {
+    itensCardapio.splice(index, 1);
+    renderCardapio();
+  }
+}
+
+function clearForm() {
+  document.getElementById('categoria').value = 'Entrada';
+  document.getElementById('nome').value = '';
+  document.getElementById('descricao').value = '';
+  document.getElementById('preco').value = '';
+}
 </script>
 
 </body>
 </html>
+
