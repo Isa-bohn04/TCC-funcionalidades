@@ -60,14 +60,28 @@
   <label>Categoria: 
     <select id="categoria">
       <option>Entrada</option>
-      <option>Prato Principal</option>
-      <option>Sobremesa</option>
-      <option>Bebida</option>
+      <option>Intervalo</option>
+      <option>Saída</option>
     </select>
   </label>
   <label>Nome: <input type="text" id="nome"></label>
   <label>Descrição: <input type="text" id="descricao"></label>
-  <label>Preço: <input type="number" id="preco" step="0.01" min="0"></label>
+  <label>Turno: 
+    <select id="turno">
+      <option>Manhã</option>
+      <option>Tarde</option>
+      <option>Noite</option>
+    </select>
+  </label>
+  <label>Dia: 
+    <select id="dia">
+      <option>Segunda</option>
+      <option>Terça</option>
+      <option>Quarta</option>
+      <option>Quinta</option>
+      <option>Sexta</option>
+    </select>
+  </label>
   <br>
   <button onclick="addOrUpdateItem()">Salvar Item</button>
 </div>
@@ -78,7 +92,8 @@
       <th>Categoria</th>
       <th>Nome</th>
       <th>Descrição</th>
-      <th>Preço (R$)</th>
+      <th>Turno</th>
+      <th>Dia</th>
       <th>Ações</th>
     </tr>
   </thead>
@@ -99,7 +114,8 @@ function renderCardapio() {
       <td>${item.categoria}</td>
       <td>${item.nome}</td>
       <td>${item.descricao}</td>
-      <td>R$ ${item.preco.toFixed(2)}</td>
+      <td>${item.turno}</td>
+      <td>${item.dia}</td>
       <td>
         <button class="btn-edit" onclick="editItem(${index})">Editar</button>
         <button class="btn-delete" onclick="deleteItem(${index})">Excluir</button>
@@ -113,15 +129,16 @@ function addOrUpdateItem() {
   const categoria = document.getElementById('categoria').value;
   const nome = document.getElementById('nome').value;
   const descricao = document.getElementById('descricao').value;
-  const preco = parseFloat(document.getElementById('preco').value);
+  const turno = document.getElementById('turno').value;
+  const dia = document.getElementById('dia').value;
   const editIndex = document.getElementById('editIndex').value;
 
-  if (!nome || !descricao || isNaN(preco) || preco <= 0) {
-    alert('Preencha todos os campos obrigatórios corretamente!');
+  if (!nome || !descricao) {
+    alert('Preencha todos os campos obrigatórios!');
     return;
   }
 
-  const item = { categoria, nome, descricao, preco };
+  const item = { categoria, nome, descricao, turno, dia };
 
   if (editIndex === '') {
     itensCardapio.push(item);
@@ -139,7 +156,8 @@ function editItem(index) {
   document.getElementById('categoria').value = item.categoria;
   document.getElementById('nome').value = item.nome;
   document.getElementById('descricao').value = item.descricao;
-  document.getElementById('preco').value = item.preco;
+  document.getElementById('turno').value = item.turno;
+  document.getElementById('dia').value = item.dia;
   document.getElementById('editIndex').value = index;
 }
 
@@ -154,7 +172,8 @@ function clearForm() {
   document.getElementById('categoria').value = 'Entrada';
   document.getElementById('nome').value = '';
   document.getElementById('descricao').value = '';
-  document.getElementById('preco').value = '';
+  document.getElementById('turno').value = 'Manhã';
+  document.getElementById('dia').value = 'Segunda';
 }
 </script>
 
