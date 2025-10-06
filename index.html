@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade Horária</title>
+  
+  <!-- Link para Font Awesome (para os ícones) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  
+  <style>
+    /* Estilos gerais */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #87CEEB; /* Azul céu */
+      padding: 15px 30px;
+    }
+
+    /* Logo */
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+    }
+
+    /* Área de ícones e barra de pesquisa */
+    .header-right {
+      display: flex;
+      align-items: center;
+    }
+
+    /* Ícones */
+    .header-right i {
+      font-size: 20px;
+      color: white;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+
+    /* Barra de pesquisa */
+    .search-container {
+      position: relative;
+    }
+
+    .search-container input {
+      padding: 8px 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 20px;
+      width: 200px;
+      outline: none;
+    }
+
+    .search-container .fa-search {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      color: #aaa;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <!-- Logo -->
+    <div class="logo">
+      MeuSite
+    </div>
+
+    <!-- Ícones e Barra de Pesquisa -->
+    <div class="header-right">
+      <!-- Ícones -->
+      <i class="fas fa-home"></i>
+      <i class="fas fa-envelope"></i>
+      <i class="fas fa-plus"></i>
+      
+      <!-- Barra de Pesquisa -->
+      <div class="search-container">
+        <input type="text" placeholder="Pesquisar...">
+        <i class="fas fa-search"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo da página -->
+  <main>
+    <h1>Bem-vindo à Grade Horária</h1>
+  </main>
+
+</body>
+</html>
