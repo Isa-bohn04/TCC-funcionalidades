@@ -21,7 +21,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #87CEEB; /* Azul céu */
+      background-color: #00aaff; /* Azul mais vivo */
       padding: 15px 30px;
     }
 
@@ -38,12 +38,20 @@
       align-items: center;
     }
 
-    /* Ícones */
+    /* Ícones e Texto */
     .header-right i {
       font-size: 20px;
       color: white;
-      margin: 0 10px;
+      margin-right: 8px;
       cursor: pointer;
+    }
+
+    .header-right .icon-text {
+      display: flex;
+      align-items: center;
+      color: white;
+      margin-right: 15px;
+      font-size: 16px;
     }
 
     /* Barra de pesquisa */
@@ -81,10 +89,23 @@
 
     <!-- Ícones e Barra de Pesquisa -->
     <div class="header-right">
-      <!-- Ícones -->
-      <i class="fas fa-home"></i>
-      <i class="fas fa-envelope"></i>
-      <i class="fas fa-plus"></i>
+      <!-- Ícone e texto Home -->
+      <div class="icon-text">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </div>
+
+      <!-- Ícone e texto Mensagens -->
+      <div class="icon-text">
+        <i class="fas fa-envelope"></i>
+        <span>Mensagens</span>
+      </div>
+
+      <!-- Ícone e texto Adicionar -->
+      <div class="icon-text">
+        <i class="fas fa-plus"></i>
+        <span>Adicionar</span>
+      </div>
       
       <!-- Barra de Pesquisa -->
       <div class="search-container">
@@ -94,10 +115,6 @@
     </div>
   </header>
 
-  <!-- Conteúdo da página -->
-  <main>
-    <h1>Bem-vindo à Grade Horária</h1>
-  </main>
-
 </body>
 </html>
+
