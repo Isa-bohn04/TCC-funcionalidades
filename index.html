@@ -1,54 +1,54 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Grade Horária</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background: #f4f4f4;
-  }
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background: white;
-  }
-  th, td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: center;
-  }
-  th {
-    background: #007bff;
-    color: white;
-  }
-  input, select, button {
-    padding: 5px;
-    margin: 5px 0;
-  }
-  .form-container {
-    background: white;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-  }
-  .btn-edit, .btn-delete {
-    cursor: pointer;
-    padding: 5px 8px;
-    border: none;
-    border-radius: 4px;
-    margin: 0 2px;
-  }
-  .btn-edit { background: #ffc107; color: #000; }
-  .btn-delete { background: #dc3545; color: #fff; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade Horária</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    input, select, button {
+      padding: 5px;
+      margin: 5px 0;
+    }
+    .form-container {
+      background: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    .btn-edit, .btn-delete {
+      cursor: pointer;
+      padding: 5px 8px;
+      border: none;
+      border-radius: 4px;
+      margin: 0 2px;
+    }
+    .btn-edit { background: #ffc107; color: #000; }
+    .btn-delete { background: #dc3545; color: #fff; }
+  </style>
 </head>
 <body>
 
@@ -58,21 +58,24 @@
   <h3>Adicionar / Editar Aula</h3>
   <input type="hidden" id="editIndex">
   <label>Turma: <input type="text" id="turma"></label>
-  <label>Disciplina: <input type="text" id="disciplina"></label>
-  <label>Professor: <input type="text" id="professor"></label>
-  <label>Dia: 
-    <select id="dia">
-      <option>Segunda</option>
-      <option>Terça</option>
-      <option>Quarta</option>
-      <option>Quinta</option>
-      <option>Sexta</option>
+  <label>Turno: 
+    <select id="turno">
+      <option>Manhã</option>
+      <option>Tarde</option>
+      <option>Noite</option>
     </select>
   </label>
-  <label>Início: <input type="time" id="horaInicio"></label>
-  <label>Fim: <input type="time" id="horaFim"></label>
+  <label>Professor: <input type="text" id="professor"></label>
   <label>Sala: <input type="text" id="sala"></label>
-  <br>
+  <label>Matéria: <input type="text" id="materia"></label>
+  <br><br>
+  <h4>Horários:</h4>
+  <label>Segunda: <input type="text" id="seg" placeholder="07:30 - 08:20"></label>
+  <label>Terça: <input type="text" id="ter" placeholder="07:30 - 08:20"></label>
+  <label>Quarta: <input type="text" id="qua" placeholder="07:30 - 08:20"></label>
+  <label>Quinta: <input type="text" id="qui" placeholder="07:30 - 08:20"></label>
+  <label>Sexta: <input type="text" id="sex" placeholder="07:30 - 08:20"></label>
+  <br><br>
   <button onclick="addOrUpdateAula()">Salvar Aula</button>
 </div>
 
@@ -80,12 +83,15 @@
   <thead>
     <tr>
       <th>Turma</th>
-      <th>Disciplina</th>
+      <th>Turno</th>
       <th>Professor</th>
-      <th>Dia</th>
-      <th>Início</th>
-      <th>Fim</th>
       <th>Sala</th>
+      <th>Matéria</th>
+      <th>Segunda</th>
+      <th>Terça</th>
+      <th>Quarta</th>
+      <th>Quinta</th>
+      <th>Sexta</th>
       <th>Ações</th>
     </tr>
   </thead>
@@ -95,86 +101,98 @@
 </table>
 
 <script>
-let aulas = [];
+  let aulas = [];
 
-function renderGrade() {
-  const tbody = document.getElementById('gradeBody');
-  tbody.innerHTML = '';
-  aulas.forEach((aula, index) => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${aula.turma}</td>
-      <td>${aula.disciplina}</td>
-      <td>${aula.professor}</td>
-      <td>${aula.dia}</td>
-      <td>${aula.horaInicio}</td>
-      <td>${aula.horaFim}</td>
-      <td>${aula.sala}</td>
-      <td>
-        <button class="btn-edit" onclick="editAula(${index})">Editar</button>
-        <button class="btn-delete" onclick="deleteAula(${index})">Excluir</button>
-      </td>
-    `;
-    tbody.appendChild(row);
-  });
-}
-
-function addOrUpdateAula() {
-  const turma = document.getElementById('turma').value;
-  const disciplina = document.getElementById('disciplina').value;
-  const professor = document.getElementById('professor').value;
-  const dia = document.getElementById('dia').value;
-  const horaInicio = document.getElementById('horaInicio').value;
-  const horaFim = document.getElementById('horaFim').value;
-  const sala = document.getElementById('sala').value;
-  const editIndex = document.getElementById('editIndex').value;
-
-  if (!turma || !disciplina || !dia || !horaInicio || !horaFim) {
-    alert('Preencha todos os campos obrigatórios!');
-    return;
+  function renderGrade() {
+    const tbody = document.getElementById('gradeBody');
+    tbody.innerHTML = '';
+    aulas.forEach((aula, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${aula.turma}</td>
+        <td>${aula.turno}</td>
+        <td>${aula.professor}</td>
+        <td>${aula.sala}</td>
+        <td>${aula.materia}</td>
+        <td>${aula.seg}</td>
+        <td>${aula.ter}</td>
+        <td>${aula.qua}</td>
+        <td>${aula.qui}</td>
+        <td>${aula.sex}</td>
+        <td>
+          <button class="btn-edit" onclick="editAula(${index})">Editar</button>
+          <button class="btn-delete" onclick="deleteAula(${index})">Excluir</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
   }
 
-  const aula = { turma, disciplina, professor, dia, horaInicio, horaFim, sala };
+  function addOrUpdateAula() {
+    const turma = document.getElementById('turma').value;
+    const turno = document.getElementById('turno').value;
+    const professor = document.getElementById('professor').value;
+    const sala = document.getElementById('sala').value;
+    const materia = document.getElementById('materia').value;
+    const seg = document.getElementById('seg').value;
+    const ter = document.getElementById('ter').value;
+    const qua = document.getElementById('qua').value;
+    const qui = document.getElementById('qui').value;
+    const sex = document.getElementById('sex').value;
+    const editIndex = document.getElementById('editIndex').value;
 
-  if (editIndex === '') {
-    aulas.push(aula);
-  } else {
-    aulas[editIndex] = aula;
-    document.getElementById('editIndex').value = '';
-  }
+    if (!turma || !turno || !professor || !sala || !materia || !seg || !ter || !qua || !qui || !sex) {
+      alert('Preencha todos os campos obrigatórios!');
+      return;
+    }
 
-  clearForm();
-  renderGrade();
-}
+    const aula = { turma, turno, professor, sala, materia, seg, ter, qua, qui, sex };
 
-function editAula(index) {
-  const aula = aulas[index];
-  document.getElementById('turma').value = aula.turma;
-  document.getElementById('disciplina').value = aula.disciplina;
-  document.getElementById('professor').value = aula.professor;
-  document.getElementById('dia').value = aula.dia;
-  document.getElementById('horaInicio').value = aula.horaInicio;
-  document.getElementById('horaFim').value = aula.horaFim;
-  document.getElementById('sala').value = aula.sala;
-  document.getElementById('editIndex').value = index;
-}
+    if (editIndex === '') {
+      aulas.push(aula);
+    } else {
+      aulas[editIndex] = aula;
+      document.getElementById('editIndex').value = '';
+    }
 
-function deleteAula(index) {
-  if (confirm('Deseja realmente excluir esta aula?')) {
-    aulas.splice(index, 1);
+    clearForm();
     renderGrade();
   }
-}
 
-function clearForm() {
-  document.getElementById('turma').value = '';
-  document.getElementById('disciplina').value = '';
-  document.getElementById('professor').value = '';
-  document.getElementById('dia').value = 'Segunda';
-  document.getElementById('horaInicio').value = '';
-  document.getElementById('horaFim').value = '';
-  document.getElementById('sala').value = '';
-}
+  function editAula(index) {
+    const aula = aulas[index];
+    document.getElementById('turma').value = aula.turma;
+    document.getElementById('turno').value = aula.turno;
+    document.getElementById('professor').value = aula.professor;
+    document.getElementById('sala').value = aula.sala;
+    document.getElementById('materia').value = aula.materia;
+    document.getElementById('seg').value = aula.seg;
+    document.getElementById('ter').value = aula.ter;
+    document.getElementById('qua').value = aula.qua;
+    document.getElementById('qui').value = aula.qui;
+    document.getElementById('sex').value = aula.sex;
+    document.getElementById('editIndex').value = index;
+  }
+
+  function deleteAula(index) {
+    if (confirm('Deseja realmente excluir esta aula?')) {
+      aulas.splice(index, 1);
+      renderGrade();
+    }
+  }
+
+  function clearForm() {
+    document.getElementById('turma').value = '';
+    document.getElementById('turno').value = 'Manhã';
+    document.getElementById('professor').value = '';
+    document.getElementById('sala').value = '';
+    document.getElementById('materia').value = '';
+    document.getElementById('seg').value = '';
+    document.getElementById('ter').value = '';
+    document.getElementById('qua').value = '';
+    document.getElementById('qui').value = '';
+    document.getElementById('sex').value = '';
+  }
 </script>
 
 </body>
